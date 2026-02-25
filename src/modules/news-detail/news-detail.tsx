@@ -5,6 +5,8 @@ import { useNewsDetailController } from './controllers';
 import Link from 'next/link';
 import { CalendarIcon, UserIcon, ArrowLeftIcon, ShareIcon } from '@heroicons/react/24/outline';
 
+import 'react-quill-new/dist/quill.snow.css';
+
 export default function NewsDetail() {
     const params = useParams();
     const idStr = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -95,8 +97,9 @@ export default function NewsDetail() {
             </header>
 
             <div className="prose prose-lg max-w-none text-color-foreground prose-headings:font-sans prose-headings:text-brand-300 prose-a:text-brand-400">
-                {/* We use dangerouslySetInnerHTML here because the content might be HTML from React Quill in the future */}
-                <div dangerouslySetInnerHTML={{ __html: news.content }} />
+                <div className="ql-snow">
+                    <div className="ql-editor" dangerouslySetInnerHTML={{ __html: news.content }} />
+                </div>
             </div>
 
         </article>
