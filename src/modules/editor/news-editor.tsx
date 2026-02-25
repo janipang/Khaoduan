@@ -39,6 +39,11 @@ export default function NewsEditorForm({ existingNews, username }: NewsEditorPro
         setStatus,
         tagsInput,
         setTagsInput,
+        keywords,
+        keywordInput,
+        setKeywordInput,
+        handleAddKeyword,
+        handleRemoveKeyword,
         isSubmitting,
         error,
         handleSubmit
@@ -154,6 +159,60 @@ export default function NewsEditorForm({ existingNews, username }: NewsEditorPro
                                 onValueChange={setTagsInput}
                                 classNames={{ label: "text-color-foreground font-medium" }}
                             />
+                        </div>
+
+                        <div className="flex flex-col gap-2 w-full">
+                            <Input
+                                fullWidth
+                                label="Keywords (Max 7)"
+                                placeholder={keywords.length >= 7 ? "Maximum reached" : "Enter a keyword and click +"}
+                                value={keywordInput}
+                                onValueChange={setKeywordInput}
+                                isDisabled={keywords.length >= 7}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleAddKeyword();
+                                    }
+                                }}
+                                endContent={
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        color="primary"
+                                        variant="flat"
+                                        isDisabled={keywords.length >= 7 || !keywordInput.trim()}
+                                        onPress={handleAddKeyword}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                    </Button>
+                                }
+                                classNames={{ label: "text-color-foreground font-medium" }}
+                            />
+                            {keywords.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {keywords.map((k) => (
+                                        <span
+                                            key={k}
+                                            className="inline-flex items-center gap-1 px-3 py-1 bg-brand-100 text-brand-500 text-sm rounded-full font-medium"
+                                        >
+                                            {k}
+                                            <button
+                                                type="button"
+                                                className="hover:text-red-500 transition-colors"
+                                                onClick={() => handleRemoveKeyword(k)}
+                                                aria-label={`Remove keyword ${k}`}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                                                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex flex-col gap-2">

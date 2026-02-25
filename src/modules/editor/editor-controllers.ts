@@ -13,9 +13,22 @@ export function useNewsEditorController(existingNews?: News, username?: string) 
     const publisher = existingNews?.publisher || username || '';
     const [status, setStatus] = useState<string>(existingNews?.status || 'draft');
     const [tagsInput, setTagsInput] = useState(existingNews?.tags?.join(', ') || '');
+    const [keywords, setKeywords] = useState<string[]>(existingNews?.keywords || []);
+    const [keywordInput, setKeywordInput] = useState('');
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const handleAddKeyword = () => {
+        if (keywordInput.trim() && keywords.length < 7 && !keywords.includes(keywordInput.trim())) {
+            setKeywords([...keywords, keywordInput.trim()]);
+            setKeywordInput('');
+        }
+    };
+
+    const handleRemoveKeyword = (keywordToRemove: string) => {
+        setKeywords(keywords.filter(k => k !== keywordToRemove));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,6 +50,7 @@ export function useNewsEditorController(existingNews?: News, username?: string) 
             publisher,
             status,
             tags,
+            keywords,
             // API expects proper ISO strings or defaults
             publishedTime: existingNews?.publishedTime || new Date().toISOString(),
             lastEdittedTime: new Date().toISOString(),
@@ -74,6 +88,11 @@ export function useNewsEditorController(existingNews?: News, username?: string) 
         setStatus,
         tagsInput,
         setTagsInput,
+        keywords,
+        keywordInput,
+        setKeywordInput,
+        handleAddKeyword,
+        handleRemoveKeyword,
         isSubmitting,
         error,
         handleSubmit
