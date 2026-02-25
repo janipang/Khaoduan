@@ -10,6 +10,7 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logoutAction } from "@/modules/login/actions";
 
 interface NavbarClientProps {
     isLoggedIn: boolean;
@@ -86,6 +87,24 @@ export default function NavbarClient({ isLoggedIn, username }: NavbarClientProps
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
                                     <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clipRule="evenodd" />
                                 </svg>{username}</span>
+                        </NavbarItem>
+                        <NavbarItem>
+                            <Button
+                                isIconOnly
+                                variant="flat"
+                                className="text-danger bg-danger/10 hover:bg-danger/20 transition-all"
+                                aria-label="Logout"
+                                onPress={async () => {
+                                    const res = await logoutAction();
+                                    if (res.success) {
+                                        window.location.href = '/login';
+                                    }
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                </svg>
+                            </Button>
                         </NavbarItem>
                     </>
                 ) : (

@@ -70,3 +70,14 @@ export async function registerAction(credentials: LoginCredentials) {
         return { success: false, message: (error as Error).message || 'An error occurred during registration' };
     }
 }
+
+export async function logoutAction() {
+    try {
+        const cookieStore = await cookies();
+        cookieStore.delete('auth-token');
+        cookieStore.delete('username');
+        return { success: true };
+    } catch (error) {
+        return { success: false, message: 'Failed to logout' };
+    }
+}
