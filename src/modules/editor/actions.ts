@@ -1,6 +1,6 @@
 'use server';
 
-import { createNews, updateNews, deleteNews, getNews, getNewsWithParams } from '@/services/news-service';
+import { createNews, updateNews, deleteNews, getNews, getNewsWithParams, uploadFile } from '@/services/news-service';
 import { cookies } from 'next/headers';
 import { News } from '@/types/news';
 
@@ -47,6 +47,7 @@ export async function createNewsAction(newsData: Partial<News> | FormData) {
 }
 
 export async function updateNewsAction(id: string | number, newsData: Partial<News> | FormData) {
+    // console.log(newsData)
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('auth-token')?.value;
@@ -68,6 +69,20 @@ export async function deleteNewsAction(id: string | number) {
         if (!token) throw new Error("UNAUTHORIZED_401");
 
         const data = await deleteNews(id, token);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, message: (error as Error).message };
+    }
+}
+
+export async function uploadFileAction(formData: FormData) {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('auth-token')?.value;
+
+        if (!token) throw new Error("UNAUTHORIZED_401");
+
+        const data = await uploadFile(formData, token);
         return { success: true, data };
     } catch (error) {
         return { success: false, message: (error as Error).message };

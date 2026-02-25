@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { createNewsAction, updateNewsAction } from './actions';
 import { News } from '@/types/news';
 
-export function useNewsEditorController(existingNews?: News) {
+export function useNewsEditorController(existingNews?: News, username?: string) {
     const router = useRouter();
 
     const [title, setTitle] = useState(existingNews?.title || '');
     const [content, setContent] = useState(existingNews?.content || '');
-    const [publisher, setPublisher] = useState(existingNews?.publisher || '');
+    const publisher = existingNews?.publisher || username || '';
     const [status, setStatus] = useState<string>(existingNews?.status || 'draft');
     const [tagsInput, setTagsInput] = useState(existingNews?.tags?.join(', ') || '');
 
@@ -70,7 +70,6 @@ export function useNewsEditorController(existingNews?: News) {
         content,
         setContent,
         publisher,
-        setPublisher,
         status,
         setStatus,
         tagsInput,

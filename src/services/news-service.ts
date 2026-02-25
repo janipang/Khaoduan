@@ -60,6 +60,25 @@ export async function getNewsWithParams(params: NewsQueryParams = {}): Promise<N
     return response.json();
 }
 
+export async function uploadFile(formData: FormData, token: string): Promise<{ path: string }> {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+
+    const response = await fetch(`${apiUrl}/file/upload`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) throw new Error('UNAUTHORIZED_401');
+        throw new Error('Failed to upload file');
+    }
+
+    return response.json();
+}
+
 export async function getNewsById(id: number | string): Promise<News> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
 

@@ -1,6 +1,7 @@
 import NewsEditorForm from '@/modules/editor/news-editor';
 import { getNewsById } from '@/services/news-service';
 import { Metadata } from 'next';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
     title: 'Edit News - Khaoduan News',
@@ -12,10 +13,12 @@ type Props = {
 
 export default async function EditNewsPage({ params }: Props) {
     const resolvedParams = await params;
+    const cookieStore = await cookies();
+    const username = cookieStore.get('username')?.value || '';
 
     try {
         const existingNews = await getNewsById(resolvedParams.id);
-        return <NewsEditorForm existingNews={existingNews} />;
+        return <NewsEditorForm existingNews={existingNews} username={username} />;
     } catch (error) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh]">

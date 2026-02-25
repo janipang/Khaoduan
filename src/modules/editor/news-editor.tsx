@@ -3,6 +3,7 @@
 // Dynamically import React Quill to prevent SSR window is not defined errors
 import dynamic from 'next/dynamic';
 import { useNewsEditorController } from './editor-controllers';
+import { uploadFileAction } from './actions';
 import { News } from '@/types/news';
 import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
@@ -10,20 +11,30 @@ import { Input } from "@heroui/input";
 import { RadioGroup, Radio } from "@heroui/radio";
 import 'react-quill-new/dist/quill.snow.css'; // Import Quill CSS
 
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false, loading: () => <p className="text-gray-400 p-4">Loading editor...</p> });
+import { useRef, useMemo } from 'react';
+
+const ReactQuill = dynamic(
+    async () => {
+        const { default: RQ } = await import('react-quill-new');
+        return function ForwardedQuill(props: any) {
+            return <RQ ref={props.forwardedRef} {...props} />;
+        };
+    },
+    { ssr: false, loading: () => <p className="text-gray-400 p-4">Loading editor...</p> }
+);
 
 interface NewsEditorProps {
     existingNews?: News;
+    username: string;
 }
 
-export default function NewsEditorForm({ existingNews }: NewsEditorProps) {
+export default function NewsEditorForm({ existingNews, username }: NewsEditorProps) {
     const {
         title,
         setTitle,
         content,
         setContent,
         publisher,
-        setPublisher,
         status,
         setStatus,
         tagsInput,
@@ -31,19 +42,60 @@ export default function NewsEditorForm({ existingNews }: NewsEditorProps) {
         isSubmitting,
         error,
         handleSubmit
-    } = useNewsEditorController(existingNews);
+    } = useNewsEditorController(existingNews, username);
 
-    // Custom Toolbar configuration for React Quill
-    // You mentioned URL image uploading, this allows users to embed via the image button
-    const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, false] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-            ['link', 'image'],
-            ['clean']
-        ],
+    const quillRef = useRef<any>(null);
+
+    const imageHandler = () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await uploadFileAction(formData);
+                    if (res.success && res.data) {
+                        const url = res.data.path;
+                        if (url) {
+                            const quill = quillRef.current?.getEditor();
+                            if (quill) {
+                                const range = quill.getSelection(true);
+                                quill.insertEmbed(range.index, 'image', url);
+                            }
+                        } else {
+                            alert('Upload successful but no image URL was returned.');
+                        }
+                    } else {
+                        if (res.message === 'UNAUTHORIZED_401') window.dispatchEvent(new Event('auth:unauthorized'));
+                        else alert('Upload failed: ' + res.message);
+                    }
+                } catch (e) {
+                    alert('Upload failed');
+                }
+            }
+        };
     };
+
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+                ['link', 'image'],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler
+            }
+        }
+    }), []);
 
     const formats = [
         'header',
@@ -75,7 +127,7 @@ export default function NewsEditorForm({ existingNews }: NewsEditorProps) {
                             fullWidth
                             isRequired
                             label="Article Title"
-                                placeholder=" "
+                            placeholder=" "
                             value={title}
                             onValueChange={setTitle}
                             classNames={{
@@ -88,11 +140,10 @@ export default function NewsEditorForm({ existingNews }: NewsEditorProps) {
                             <Input
                                 fullWidth
                                 isRequired
+                                isReadOnly
                                 label="Publisher Name"
-                                placeholder="e.g. John Doe"
                                 value={publisher}
-                                onValueChange={setPublisher}
-                                classNames={{ label: "text-color-foreground font-medium" }}
+                                classNames={{ label: "text-color-foreground font-medium", input: "text-gray-500 cursor-not-allowed" }}
                             />
 
                             <Input
@@ -126,6 +177,7 @@ export default function NewsEditorForm({ existingNews }: NewsEditorProps) {
                             </label>
                             <div className="bg-white rounded-md border border-gray-200">
                                 <ReactQuill
+                                    forwardedRef={quillRef}
                                     theme="snow"
                                     value={content}
                                     onChange={setContent}
