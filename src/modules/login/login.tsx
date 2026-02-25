@@ -1,5 +1,6 @@
 'use client';
 
+import { Input } from '@heroui/input';
 import { useLoginController } from './controllers';
 
 export default function Login() {
@@ -23,42 +24,26 @@ export default function Login() {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form className="space-y-6" onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="username" className="block text-sm font-medium leading-6 text-color-foreground">
-                            Username
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                id="username"
-                                name="username"
-                                type="text"
-                                required
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="block w-full rounded-md border-0 py-2.5 px-3.5 text-color-foreground shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-brand-300 sm:text-sm sm:leading-6 bg-transparent"
-                            />
-                        </div>
-                    </div>
+                    <Input
+                        id="username"
+                        value={username}
+                        fullWidth
+                        isRequired
+                        label="Username"
+                        onValueChange={setUsername}
+                        variant='bordered'
+                    />
 
-                    <div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-color-foreground">
-                                Password
-                            </label>
-                        </div>
-                        <div className="mt-2">
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full rounded-md border-0 py-2.5 px-3.5 text-color-foreground shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-brand-300 sm:text-sm sm:leading-6 bg-transparent"
-                            />
-                        </div>
-                    </div>
+                    <Input
+                        id="password"
+                        type='password'
+                        value={password}
+                        fullWidth
+                        isRequired
+                        label="password"
+                        onValueChange={setPassword}
+                        variant='bordered'
+                    />
 
                     {error && (
                         <div className="text-brand-400 text-sm font-medium p-3 bg-brand-100 bg-opacity-20 rounded-md">
@@ -76,6 +61,13 @@ export default function Login() {
                         </button>
                     </div>
                 </form>
+
+                <p className="mt-10 text-center text-sm text-gray-500">
+                    Not a member?{' '}
+                    <a href="/register" className="font-semibold leading-6 text-brand-300 hover:text-brand-200">
+                        Register now
+                    </a>
+                </p>
             </div>
         </div>
     );

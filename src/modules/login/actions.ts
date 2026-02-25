@@ -1,34 +1,72 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { loginAuth } from '@/services/auth-service';
+import { loginAuth, registerAuth } from '@/services/auth-service';
 import { LoginCredentials } from './types';
 
 export async function loginAction(credentials: LoginCredentials) {
     try {
-        console.log('loginAction');
         const data = await loginAuth(credentials);
 
-        if (data.token) {
+        // Ensure we use the keys returned by your .NET API (accesstoken and username)
+        if (data.token || data.username) {
             const cookieStore = await cookies();
+
             cookieStore.set('auth-token', data.token, {
                 path: '/',
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
-                maxAge: 60 * 60 * 24 * 7 // 1 week
+                maxAge: 60 * 60 * 3 // 3 hours
             });
+
+            cookieStore.set('username', data.username, {
+                path: '/',
+                httpOnly: false,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 3
+            });
+
             return { success: true };
         }
-        const cookieStore = await cookies();
-        const myToken = cookieStore.get('auth-token');
 
-        // This will appear in your TERMINAL, not the browser console
-        console.log('Full Cookie Object:', myToken);
-        console.log('Raw Value:', myToken?.value);
+        return { success: false, message: 'No credentials received from server' };
 
-        return { success: false, message: 'No token received from server' };
     } catch (error) {
         return { success: false, message: (error as Error).message || 'An error occurred during login' };
+    }
+}
+
+export async function registerAction(credentials: LoginCredentials) {
+    try {
+        const data = await registerAuth(credentials);
+
+        if (data.token || data.username) {
+            const cookieStore = await cookies();
+
+            cookieStore.set('auth-token', data.token, {
+                path: '/',
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 3 // 3 hours
+            });
+
+            cookieStore.set('username', data.username, {
+                path: '/',
+                httpOnly: false,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 3
+            });
+
+            return { success: true };
+        }
+
+        return { success: false, message: 'No credentials received from server' };
+
+    } catch (error) {
+        return { success: false, message: (error as Error).message || 'An error occurred during registration' };
     }
 }
