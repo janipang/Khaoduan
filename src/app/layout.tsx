@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 import { Providers } from "./providers";
 import Navbar from "@/components/navbar/navbar";
+import AuthModal from "@/components/auth-modal/auth-modal";
 
 export default function RootLayout({
   children,
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${kanit.variable} font-sans antialiased text-color-foreground bg-color-background`}>
         <Providers>
+          <AuthModal />
           <Navbar />
           {children}
         </Providers>

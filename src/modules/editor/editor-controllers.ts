@@ -52,10 +52,10 @@ export function useNewsEditorController(existingNews?: News) {
             }
 
             if (result.success) {
-                router.push('/manage');
-                router.refresh();
+                router.push('/news/manage');
             } else {
-                setError(result.message || 'Failed to save news article');
+                if (result.message === 'UNAUTHORIZED_401') window.dispatchEvent(new Event('auth:unauthorized'));
+                else setError(result.message || 'Failed to save news article');
             }
         } catch (err) {
             setError('An unexpected error occurred while saving.');

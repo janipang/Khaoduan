@@ -17,11 +17,47 @@ export async function getNews(publisher?: string): Promise<News[]> {
     });
 
     if (!response.ok) {
+        console.log(response.status)
         throw new Error('Failed to fetch news');
     }
 
     const data = await response.json();
     return data;
+}
+
+export interface NewsQueryParams {
+    publisher?: string;
+    tags?: string;
+    keywords?: string;
+    [key: string]: any; // To allow other potential parameters
+}
+
+export async function getNewsWithParams(params: NewsQueryParams = {}): Promise<News[]> {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const url = new URL(`${apiUrl}/news`);
+
+    // Add all defined parameters to the query string
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.append(key, String(value));
+        }
+    });
+
+    const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) throw new Error('UNAUTHORIZED_401');
+        console.error(`Failed to fetch news with params: ${response.status}`);
+        throw new Error('Failed to fetch news');
+    }
+
+    return response.json();
 }
 
 export async function getNewsById(id: number | string): Promise<News> {
@@ -36,6 +72,7 @@ export async function getNewsById(id: number | string): Promise<News> {
     });
 
     if (!response.ok) {
+        if (response.status === 401) throw new Error('UNAUTHORIZED_401');
         throw new Error(`Failed to fetch news with ID: ${id}`);
     }
 
@@ -65,6 +102,7 @@ export async function createNews(newsOrFormData: Partial<News> | FormData, token
     });
 
     if (!response.ok) {
+        if (response.status === 401) throw new Error('UNAUTHORIZED_401');
         throw new Error('Failed to create news article');
     }
 
@@ -91,6 +129,8 @@ export async function updateNews(id: number | string, newsOrFormData: Partial<Ne
     });
 
     if (!response.ok) {
+        if (response.status === 401) throw new Error('UNAUTHORIZED_401');
+        console.log(response.status)
         throw new Error(`Failed to update news ID: ${id}`);
     }
 
@@ -109,6 +149,7 @@ export async function deleteNews(id: number | string, token: string) {
     });
 
     if (!response.ok) {
+        if (response.status === 401) throw new Error('UNAUTHORIZED_401');
         throw new Error(`Failed to delete news ID: ${id}`);
     }
 

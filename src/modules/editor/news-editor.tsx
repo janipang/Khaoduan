@@ -75,7 +75,7 @@ export default function NewsEditorForm({ existingNews }: NewsEditorProps) {
                             fullWidth
                             isRequired
                             label="Article Title"
-                            placeholder="Enter the main headline"
+                                placeholder=" "
                             value={title}
                             onValueChange={setTitle}
                             classNames={{

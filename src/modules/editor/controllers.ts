@@ -23,7 +23,8 @@ export function useManageNewsController() {
             if (result.success && result.data) {
                 setNewsList(result.data);
             } else {
-                setError(result.message || 'Failed to load news');
+                if (result.message === 'UNAUTHORIZED_401') window.dispatchEvent(new Event('auth:unauthorized'));
+                else setError(result.message || 'Failed to load news');
             }
         } catch (err) {
             setError('An unexpected error occurred');
@@ -42,7 +43,8 @@ export function useManageNewsController() {
                 // Refresh list
                 setNewsList(prev => prev.filter(n => n.id !== id));
             } else {
-                alert(result.message || 'Failed to delete news');
+                if (result.message === 'UNAUTHORIZED_401') window.dispatchEvent(new Event('auth:unauthorized'));
+                else alert(result.message || 'Failed to delete news');
             }
         } catch (err) {
             alert('An unexpected error occurred while deleting');
@@ -52,7 +54,7 @@ export function useManageNewsController() {
     };
 
     const handleEdit = (id: number) => {
-        router.push(`/edit/${id}`);
+        router.push(`/news/edit/${id}`);
     };
 
     const handleCreateNew = () => {

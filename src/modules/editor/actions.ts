@@ -1,6 +1,6 @@
 'use server';
 
-import { createNews, updateNews, deleteNews, getNews } from '@/services/news-service';
+import { createNews, updateNews, deleteNews, getNews, getNewsWithParams } from '@/services/news-service';
 import { cookies } from 'next/headers';
 import { News } from '@/types/news';
 
@@ -19,14 +19,13 @@ export async function getManageNewsAction() {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('auth-token')?.value;
-        if (!token) throw new Error("Unauthorized");
+        if (!token) throw new Error("UNAUTHORIZED_401");
 
-        const payload = parseJwt(token);
-        const username = payload?.username || payload?.sub;
+        const username = cookieStore.get('username')?.value;
 
-        if (!username) throw new Error("Could not extract username from token");
+        if (!username) throw new Error("Could not read username from cookie");
 
-        const data = await getNews(username);
+        const data = await getNewsWithParams({ publisher: username });
         return { success: true, data };
     } catch (error) {
         return { success: false, message: (error as Error).message };
@@ -38,7 +37,7 @@ export async function createNewsAction(newsData: Partial<News> | FormData) {
         const cookieStore = await cookies();
         const token = cookieStore.get('auth-token')?.value;
 
-        if (!token) throw new Error("Unauthorized");
+        if (!token) throw new Error("UNAUTHORIZED_401");
 
         const data = await createNews(newsData, token);
         return { success: true, data };
@@ -52,7 +51,7 @@ export async function updateNewsAction(id: string | number, newsData: Partial<Ne
         const cookieStore = await cookies();
         const token = cookieStore.get('auth-token')?.value;
 
-        if (!token) throw new Error("Unauthorized");
+        if (!token) throw new Error("UNAUTHORIZED_401");
 
         const data = await updateNews(id, newsData, token);
         return { success: true, data };
@@ -66,7 +65,7 @@ export async function deleteNewsAction(id: string | number) {
         const cookieStore = await cookies();
         const token = cookieStore.get('auth-token')?.value;
 
-        if (!token) throw new Error("Unauthorized");
+        if (!token) throw new Error("UNAUTHORIZED_401");
 
         const data = await deleteNews(id, token);
         return { success: true, data };

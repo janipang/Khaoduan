@@ -21,7 +21,7 @@ export default function ManageNews() {
         <div className="max-w-5xl mx-auto px-4 py-8 bg-color-background min-h-screen">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <h1 className="text-3xl font-extrabold font-sans text-color-foreground tracking-tight">
-                    Manage News
+                    Your News
                 </h1>
                 <Button
                     color="primary"
@@ -63,7 +63,11 @@ export default function ManageNews() {
                                             <Chip size="sm" variant="flat" className="bg-gray-100 text-gray-500">Draft</Chip>
                                         )}
                                         <span className="text-xs text-brand-500">
-                                            {new Date(news.publishedTime).toLocaleDateString()}
+                                            {new Date(news.publishedTime).toLocaleDateString('en-GB', {
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            })}
                                         </span>
                                     </div>
                                     <h3 className="text-lg font-bold font-sans text-color-foreground truncate">
