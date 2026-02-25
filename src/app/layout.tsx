@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   description: "A comprehensive news reporting application",
 };
 
+import { Providers } from "./providers";
+import Navbar from "@/components/navbar/navbar";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,8 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${kanit.variable} font-sans antialiased`}>
-        {children}
+      <body className={`${kanit.variable} font-sans antialiased text-color-foreground bg-color-background`}>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

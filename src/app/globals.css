@@ -3,14 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #F59D9D;
+  --secondary: #F29A6B;
+  --tertiary: #DF6F25;
+  --tetrary: #dd2d4a;
+  --pentary: #787775;
 }
 
-@theme inline {
-  --color-brand-100: #F59D9D;
-  --color-brand-200: #F29A6B;
-  --color-brand-300: #DF6F25;
-  --color-brand-400: #dd2d4a;
-  --color-brand-500: #787775;
+@theme {
+  --color-brand-100: var(--primary);
+  --color-brand-200: var(--secondary);
+  --color-brand-300: var(--tertiary);
+  --color-brand-400: var(--tetrary);
+  --color-brand-500: var(--pentary);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-kanit), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
