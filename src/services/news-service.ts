@@ -62,7 +62,7 @@ export async function getNewsWithParams(params: NewsQueryParams = {}): Promise<N
 
 export async function uploadFile(formData: FormData, token: string): Promise<{ filename: string }> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
-
+    console.log('service', apiUrl)
     const response = await fetch(`${apiUrl}/file/upload`, {
         method: 'POST',
         headers: {
