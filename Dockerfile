@@ -45,9 +45,11 @@ CMD ["node", "server.js"]
 
 # docker build -t khaoduan-fe-image . 
 # docker container rm -f khaoduan-web
-# docker run -d --name khaoduan-web --network khaoduan-net -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://khaoduan-api:8080 -e API_LOCAL_HOST=http://localhost:8080 khaoduan-fe-image
+# docker run -d --name khaoduan-web --network khaoduan-net -p 3000:3000 -e NEXT_PUBLIC_API_URL=https://khaoduan-api.janipang.dev khaoduan-fe-image
 
 # docker build -t khaoduan-api . 
 # docker container rm -f khaoduan-api
 # docker run -d --name khaoduan-api --network khaoduan-net -p 8080:8080 -v D:/Code/Project/Web/khaoduan-api/Storage:/app/storage khaoduan-api
 
+# docker update --restart always khaoduan-web
+# docker update --restart always khaoduan-api
