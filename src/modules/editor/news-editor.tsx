@@ -66,8 +66,9 @@ export default function NewsEditorForm({ existingNews, username }: NewsEditorPro
                 try {
                     const res = await uploadFileAction(formData);
                     if (res.success && res.data) {
-                        const url = res.data.path;
-                        if (url) {
+                        const filename = res.data.filename;
+                        if (filename) {
+                            const url = `${process.env.NEXT_PUBLIC_API_URL}/file/${filename}`;
                             const quill = quillRef.current?.getEditor();
                             if (quill) {
                                 const range = quill.getSelection(true);
@@ -78,6 +79,7 @@ export default function NewsEditorForm({ existingNews, username }: NewsEditorPro
                         }
                     } else {
                         if (res.message === 'UNAUTHORIZED_401') window.dispatchEvent(new Event('auth:unauthorized'));
+                        else if (res.message === 'PAYLOAD_TOO_LARGE_413') alert('File size exceeds 1MB limit. Please choose a smaller image.');
                         else alert('Upload failed: ' + res.message);
                     }
                 } catch (e) {

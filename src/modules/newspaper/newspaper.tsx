@@ -47,9 +47,11 @@ export default function Newspaper() {
                 <p className="text-brand-500 text-center py-10">No news articles available at the moment.</p>
             ) : (
                 <div className="flex flex-col gap-6">
-                    {newsList.map((news) => (
-                        <NewsCard key={news.id} news={news} />
-                    ))}
+                    {newsList.map((news) =>
+                        news.status === 'published' ? (
+                            <NewsCard key={news.id} news={news} />
+                        ) : null
+                    )}
                 </div>
             )}
         </div>

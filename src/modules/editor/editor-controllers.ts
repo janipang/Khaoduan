@@ -69,6 +69,7 @@ export function useNewsEditorController(existingNews?: News, username?: string) 
                 router.push('/news/manage');
             } else {
                 if (result.message === 'UNAUTHORIZED_401') window.dispatchEvent(new Event('auth:unauthorized'));
+                else if (result.message === 'PAYLOAD_TOO_LARGE_413') setError('Payload too large. File or text size exceeds 1MB limit.');
                 else setError(result.message || 'Failed to save news article');
             }
         } catch (err) {

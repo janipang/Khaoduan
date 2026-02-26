@@ -60,7 +60,7 @@ export async function getNewsWithParams(params: NewsQueryParams = {}): Promise<N
     return response.json();
 }
 
-export async function uploadFile(formData: FormData, token: string): Promise<{ path: string }> {
+export async function uploadFile(formData: FormData, token: string): Promise<{ filename: string }> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
 
     const response = await fetch(`${apiUrl}/file/upload`, {
@@ -73,6 +73,7 @@ export async function uploadFile(formData: FormData, token: string): Promise<{ p
 
     if (!response.ok) {
         if (response.status === 401) throw new Error('UNAUTHORIZED_401');
+        if (response.status === 413) throw new Error('PAYLOAD_TOO_LARGE_413');
         throw new Error('Failed to upload file');
     }
 
@@ -122,6 +123,7 @@ export async function createNews(newsOrFormData: Partial<News> | FormData, token
 
     if (!response.ok) {
         if (response.status === 401) throw new Error('UNAUTHORIZED_401');
+        if (response.status === 413) throw new Error('PAYLOAD_TOO_LARGE_413');
         throw new Error('Failed to create news article');
     }
 
@@ -149,6 +151,7 @@ export async function updateNews(id: number | string, newsOrFormData: Partial<Ne
 
     if (!response.ok) {
         if (response.status === 401) throw new Error('UNAUTHORIZED_401');
+        if (response.status === 413) throw new Error('PAYLOAD_TOO_LARGE_413');
         console.log(response.status)
         throw new Error(`Failed to update news ID: ${id}`);
     }

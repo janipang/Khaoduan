@@ -37,7 +37,7 @@ export default function NewsCard({ news }: NewsCardProps) {
                     <div
                         className="ql-editor !p-0 text-foreground/80 text-sm 
                    line-clamp-3 !overflow-hidden !display-[-webkit-box]
-                   [&_*]:inline"
+                   [&_*]:inline [&_img]:hidden"
                         dangerouslySetInnerHTML={{ __html: news.content }}
                     />
                 </div>
