@@ -1,7 +1,7 @@
 import { LoginCredentials, LoginResponse } from '@/modules/login/types';
 
 export async function loginAuth(credentials: LoginCredentials): Promise<LoginResponse> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
@@ -21,7 +21,7 @@ export async function loginAuth(credentials: LoginCredentials): Promise<LoginRes
 }
 
 export async function registerAuth(credentials: LoginCredentials): Promise<LoginResponse> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     const response = await fetch(`${apiUrl}/auth/register`, {
         method: 'POST',

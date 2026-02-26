@@ -66,8 +66,11 @@ export default function NewsEditorForm({ existingNews, username }: NewsEditorPro
                 try {
                     const res = await uploadFileAction(formData);
                     if (res.success && res.data) {
-                        const url = res.data.url;
-                        if (url) {
+                        const filename = res.data.filename;
+                        if (filename) {
+                            const apiUrl = `${window.location.protocol}//${window.location.hostname}:8080`;
+                            const url = `${apiUrl}/file/${filename}`;
+                            console.log('combined url', url);
                             const quill = quillRef.current?.getEditor();
                             if (quill) {
                                 const range = quill.getSelection(true);

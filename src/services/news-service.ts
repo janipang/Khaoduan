@@ -1,7 +1,7 @@
 import { News } from '@/types/news';
 
 export async function getNews(publisher?: string): Promise<News[]> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     let url = `${apiUrl}/news`;
     if (publisher) {
@@ -33,7 +33,7 @@ export interface NewsQueryParams {
 }
 
 export async function getNewsWithParams(params: NewsQueryParams = {}): Promise<News[]> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
     const url = new URL(`${apiUrl}/news`);
 
     // Add all defined parameters to the query string
@@ -61,7 +61,7 @@ export async function getNewsWithParams(params: NewsQueryParams = {}): Promise<N
 }
 
 export async function uploadFile(formData: FormData, token: string): Promise<{ filename: string }> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
     console.log('service', apiUrl)
     const response = await fetch(`${apiUrl}/file/upload`, {
         method: 'POST',
@@ -81,7 +81,7 @@ export async function uploadFile(formData: FormData, token: string): Promise<{ f
 }
 
 export async function getNewsById(id: number | string): Promise<News> {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     const response = await fetch(`${apiUrl}/news/${id}`, {
         method: 'GET',
@@ -102,7 +102,7 @@ export async function getNewsById(id: number | string): Promise<News> {
 
 // Authenticated methods
 export async function createNews(newsOrFormData: Partial<News> | FormData, token: string) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     const isFormData = newsOrFormData instanceof FormData;
 
@@ -131,7 +131,7 @@ export async function createNews(newsOrFormData: Partial<News> | FormData, token
 }
 
 export async function updateNews(id: number | string, newsOrFormData: Partial<News> | FormData, token: string) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     const isFormData = newsOrFormData instanceof FormData;
 
@@ -160,7 +160,7 @@ export async function updateNews(id: number | string, newsOrFormData: Partial<Ne
 }
 
 export async function deleteNews(id: number | string, token: string) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
     const response = await fetch(`${apiUrl}/news/${id}`, {
         method: 'DELETE',

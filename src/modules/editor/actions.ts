@@ -84,12 +84,7 @@ export async function uploadFileAction(formData: FormData) {
 
         const data = await uploadFile(formData, token);
 
-        // Construct the full URL on the server-side to avoid Next.js Docker build-time env issues
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3000/api';
-        const fullUrl = `${apiUrl}/file/${data.filename}`;
-        console.log('action', apiUrl)
-
-        return { success: true, data: { ...data, url: fullUrl } };
+        return { success: true, data };
     } catch (error) {
         return { success: false, message: (error as Error).message };
     }
