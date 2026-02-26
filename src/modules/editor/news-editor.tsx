@@ -70,7 +70,6 @@ export default function NewsEditorForm({ existingNews, username }: NewsEditorPro
                         if (filename) {
                             const apiUrl = `${window.location.protocol}//${window.location.hostname}:8080`;
                             const url = `${apiUrl}/file/${filename}`;
-                            console.log('combined url', url);
                             const quill = quillRef.current?.getEditor();
                             if (quill) {
                                 const range = quill.getSelection(true);
